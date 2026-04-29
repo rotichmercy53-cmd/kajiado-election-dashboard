@@ -9,7 +9,7 @@ st.markdown("DCS 808 Interactive Dashboard Project")
 
 @st.cache_data
 def load_data():
-    return pd.read_csv("data/kajiado_election_2022.csv")
+    return pd.read_csv("kajiado_election_2022.csv")
 
 df = load_data()
 
