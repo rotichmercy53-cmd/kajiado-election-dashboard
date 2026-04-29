@@ -37,7 +37,7 @@ h1, h2, h3 {
 # TITLE
 # ---------------------------------------------------
 st.title("🗳️ Kajiado County 2022 Presidential Election Dashboard")
-st.markdown("### DCS 808 Interactive Dashboard Project")
+st.markdown("### DCS 808 Mercy Rotich Interactive Dashboard Project")
 
 # ---------------------------------------------------
 # LOAD DATA
@@ -77,7 +77,7 @@ filtered = df[df["Constituency"].isin(selected)]
 # ---------------------------------------------------
 # KPI SECTION
 # ---------------------------------------------------
-st.subheader("📌 Key Performance Indicators")
+st.subheader("📌 Highest votes summarry")
 
 col1, col2, col3, col4 = st.columns(4)
 
