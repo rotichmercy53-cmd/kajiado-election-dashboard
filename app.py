@@ -72,18 +72,30 @@ candidate_view = st.sidebar.selectbox(
     ["All Candidates"] + cands
 )
 
+# ✅ Scatter plot configuration
+st.sidebar.subheader("Scatter Plot Settings")
+
+x_axis = st.sidebar.selectbox("Select X-axis", cands, index=0)
+y_axis = st.sidebar.selectbox("Select Y-axis", cands, index=1)
+
 filtered = df[df["Constituency"].isin(selected)]
+
+# ---------------------------------------------------
+# GLOBAL CALCULATIONS (FIXED)
+# ---------------------------------------------------
+total_votes = filtered[cands].sum().sum()
 
 # ---------------------------------------------------
 # KPI SECTION
 # ---------------------------------------------------
-st.subheader("📌 Highest votes summarry")
+st.subheader("📌 Highest votes summary")
 
 col1, col2, col3, col4 = st.columns(4)
 
-col1.metric("Total Votes", f"{int(filtered[cands].sum().sum()):,}")
+col1.metric("Total Votes", f"{int(total_votes):,}")
 col2.metric("Leading Candidate", filtered[cands].sum().idxmax())
-col3.metric("Highest Turnout", filtered.loc[filtered["Total Votes"].idxmax(), "Constituency"])
+col3.metric("Highest Turnout",
+            filtered.loc[filtered["Total Votes"].idxmax(), "Constituency"])
 col4.metric("Constituencies", len(filtered))
 
 # ---------------------------------------------------
@@ -152,10 +164,25 @@ with tab2:
         )
         st.plotly_chart(fig3, use_container_width=True)
 
+    # ✅ Scatter Plot (NEW)
+    st.subheader("📍 Candidate Vote Relationship")
+
+    scatter = px.scatter(
+        filtered,
+        x=x_axis,
+        y=y_axis,
+        size="Total Votes",
+        color="Winner",
+        hover_name="Constituency",
+        title=f"{x_axis} vs {y_axis} Votes",
+        size_max=40
+    )
+
+    st.plotly_chart(scatter, use_container_width=True)
+
     # Gauge Chart
     st.subheader("Leading Candidate Performance")
 
-    total_votes = filtered[cands].sum().sum()
     lead_votes = filtered[cands].sum().max()
     percent = (lead_votes / total_votes) * 100
 
@@ -174,7 +201,6 @@ with tab2:
 with tab3:
 
     st.subheader("Detailed Election Results")
-
     st.dataframe(filtered, use_container_width=True)
 
     csv = filtered.to_csv(index=False).encode("utf-8")
@@ -197,3 +223,6 @@ highest = filtered.loc[filtered["Total Votes"].idxmax(), "Constituency"]
 st.write(f"✅ **{leader}** is currently leading in selected constituencies.")
 st.write(f"✅ **{highest}** recorded the highest voter turnout.")
 st.write(f"✅ Total valid votes counted: **{int(total_votes):,}**")
+
+
+   
